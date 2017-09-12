@@ -11,7 +11,7 @@
     'summary': "Module that allows instant or time-based messaging with users.",
     'author': "braintec AG",
     'license': 'LGPL-3',
-    'version': '10.0.0',
+    'version': '9.0.0',
     'category': 'Extra Tools',
     'website': 'http://www.braintec-group.com',
     'images': [

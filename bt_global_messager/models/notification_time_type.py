@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*- # pylint: disable=C7902
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (c) 2017 brain-tec AG (http://www.braintec-group.com)
@@ -7,6 +7,10 @@
 #    See LICENSE file for full licensing details.
 ##############################################################################
 
-from . import notification
-from . import notification_time
-from . import notification_time_type
+from openerp import models, fields, api
+
+
+class NotificationTimeType(models.Model):
+    _name = 'notification.time.type'
+
+    name = fields.Char(string="Name")

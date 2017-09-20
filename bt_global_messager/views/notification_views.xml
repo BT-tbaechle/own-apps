@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+         <!-- Messager Notification Views -->
+        <record model="ir.ui.view" id="notification_tree_view">
+            <field name="name">notification.tree.view</field>
+            <field name="model">notification.notification</field>
+            <field name="arch" type="xml">
+                <tree string="Notification List">
+                    <field name="name"/>
+                    <field name="message"/>
+                    <field name="instant_send"/>
+                    <field name="event_date"/>
+                    <field name="event_time"/>
+                    <field name="notification_time_names"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="notification_form_view">
+            <field name="name">notification.form.view</field>
+            <field name="model">notification.notification</field>
+            <field name="arch" type="xml">
+                <form string="Notification">
+                    <sheet>
+                        <h2>
+                            <group>
+                                <field name="name"/>
+                            </group>
+                        </h2>
+                        <group>
+                            <group>
+                                <field name="message"/>
+                                <field name="icon" widget="image"/>
+                                <field name="timeout"/>
+                            </group>
+                            <group>
+                                <field name="instant_send"/>
+                                <field name="event_date" attrs="{'readonly': [('instant_send', '=', True)]}"/>
+                                <field name="event_time" attrs="{'readonly': [('instant_send', '=', True)]}" widget="float_time"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="notification_times_page" string="Notification Times">
+                                <field name="notification_time_ids" context="{'default_notification_id': active_id}">
+                                    <field name="notification_id" invisible="True"/>
+                                    <field name="notify_time_type"/>
+                                    <field name="notification_offset"
+                                           attrs="{'invisible': [('notify_time_type', '!=', %(notification_time_type_rel)d)]}"/>
+                                    <field name="notification_date"
+                                           attrs="{'invisible': [('notify_time_type', '!=', %(notification_time_type_abs)d)]}"/>
+                                    <field name="notification_time" widget="float_time"
+                                           attrs="{'invisible': [('notify_time_type', '!=', %(notification_time_type_abs)d)]}"/>
+                                    <field name="is_sent"/>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="notification_search_view" model="ir.ui.view">
+            <field name="name">notification.search.view</field>
+            <field name="model">notification.notification</field>
+            <field name="arch" type="xml">
+                <search string="Search Notifications">
+                    <field name="name"/>
+                    <field name="message"/>
+                    <filter name="instant_filter" string="Instant Notification"
+                            domain="[('instant_send', '=', True)]" />
+                    <filter name="time_bases_filter" string="Time-Based Notification"
+                            domain="[('instant_send', '=', False)]" />
+                    <group string="Group By" name="groupby">
+                        <filter string="Event Date" name="event_date_groupby" context="{'group_by': 'event_date'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Messager Notification Actions -->
+        <record model="ir.actions.act_window" id="notification_view_action">
+            <field name="name">Notifications</field>
+            <field name="res_model">notification.notification</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Messager Notification Menuitems -->
+        <menuitem id="global_messager_main_menu" name="Global Messager"
+                  parent="base.menu_administration"
+                  sequence="5"/>
+
+        <menuitem id="messager_notification_menu" name="Notifications"
+                  parent="global_messager_main_menu"
+                  action="notification_view_action"
+                  sequence="1"/>
+
+    </data>
+</openerp>

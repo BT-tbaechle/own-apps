@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+         <!-- Notification Time Views -->
+        <record model="ir.ui.view" id="notification_time_tree_view">
+            <field name="name">notification.time.tree.view</field>
+            <field name="model">notification.time</field>
+            <field name="arch" type="xml">
+                <tree string="Notification Time List" editable="bottom">
+                    <field name="notification_id"/>
+                    <field name="notify_time_type"/>
+                    <field name="notification_offset" widget="float_time"
+                           attrs="{'invisible': [('notify_time_type', '!=', %(notification_time_type_rel)d)]}"/>
+                    <field name="notification_date"
+                           attrs="{'invisible': [('notify_time_type', '!=', %(notification_time_type_abs)d)]}"/>
+                    <field name="notification_time" widget="float_time"
+                           attrs="{'invisible': [('notify_time_type', '!=', %(notification_time_type_abs)d)]}"/>
+                    <field name="is_sent"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="notification_time_form_view">
+            <field name="name">notification.time.form.view</field>
+            <field name="model">notification.time</field>
+            <field name="arch" type="xml">
+                <form string="Notification Time">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="notification_id"/>
+                                <field name="notify_time_type"/>
+                                <field name="is_sent"/>
+                            </group>
+                            <group>
+                                <field name="notification_offset" widget="float_time"
+                                       attrs="{'invisible': [('notify_time_type', '!=', %(notification_time_type_rel)d)]}"/>
+                                <field name="notification_date"
+                                       attrs="{'invisible': [('notify_time_type', '!=', %(notification_time_type_abs)d)]}"/>
+                                <field name="notification_time" widget="float_time"
+                                       attrs="{'invisible': [('notify_time_type', '!=', %(notification_time_type_abs)d)]}"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</openerp>

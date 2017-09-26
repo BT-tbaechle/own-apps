@@ -9,7 +9,7 @@
                 <tree string="Notification List">
                     <field name="name"/>
                     <field name="message"/>
-                    <field name="instant_send"/>
+                    <field name="send_manually"/>
                     <field name="event_date"/>
                     <field name="event_time"/>
                     <field name="notification_time_names"/>
@@ -32,26 +32,28 @@
                             <group>
                                 <field name="message"/>
                                 <field name="icon" widget="image"/>
-                                <field name="timeout"/>
                             </group>
                             <group>
-                                <field name="instant_send"/>
-                                <field name="event_date" attrs="{'readonly': [('instant_send', '=', True)]}"/>
-                                <field name="event_time" attrs="{'readonly': [('instant_send', '=', True)]}" widget="float_time"/>
+                                <field name="send_manually"/>
+                                <field name="event_date" attrs="{'readonly': [('send_manually', '=', True)]}"/>
+                                <field name="event_time" attrs="{'readonly': [('send_manually', '=', True)]}" widget="float_time"/>
+                                <field name="timeout"/>
                             </group>
                         </group>
                         <notebook>
                             <page name="notification_times_page" string="Notification Times">
                                 <field name="notification_time_ids" context="{'default_notification_id': active_id}">
-                                    <field name="notification_id" invisible="True"/>
-                                    <field name="notify_time_type"/>
-                                    <field name="notification_offset"
-                                           attrs="{'invisible': [('notify_time_type', '!=', %(notification_time_type_rel)d)]}"/>
-                                    <field name="notification_date"
-                                           attrs="{'invisible': [('notify_time_type', '!=', %(notification_time_type_abs)d)]}"/>
-                                    <field name="notification_time" widget="float_time"
-                                           attrs="{'invisible': [('notify_time_type', '!=', %(notification_time_type_abs)d)]}"/>
-                                    <field name="is_sent"/>
+                                    <tree editable="top">
+                                        <field name="notification_id" invisible="True"/>
+                                        <field name="notify_time_type"/>
+                                        <field name="notification_offset"
+                                               attrs="{'readonly': [('notify_time_type', '!=', %(notification_time_type_rel)d)]}"/>
+                                        <field name="notification_date"
+                                               attrs="{'readonly': [('notify_time_type', '!=', %(notification_time_type_abs)d)]}"/>
+                                        <field name="notification_time" widget="float_time"
+                                               attrs="{'readonly': [('notify_time_type', '!=', %(notification_time_type_abs)d)]}"/>
+                                        <field name="is_sent"/>
+                                    </tree>
                                 </field>
                             </page>
                         </notebook>
@@ -67,10 +69,10 @@
                 <search string="Search Notifications">
                     <field name="name"/>
                     <field name="message"/>
-                    <filter name="instant_filter" string="Instant Notification"
-                            domain="[('instant_send', '=', True)]" />
+                    <filter name="manual_filter" string="Manual Notification"
+                            domain="[('send_manually', '=', True)]" />
                     <filter name="time_bases_filter" string="Time-Based Notification"
-                            domain="[('instant_send', '=', False)]" />
+                            domain="[('send_manually', '=', False)]" />
                     <group string="Group By" name="groupby">
                         <filter string="Event Date" name="event_date_groupby" context="{'group_by': 'event_date'}"/>
                     </group>

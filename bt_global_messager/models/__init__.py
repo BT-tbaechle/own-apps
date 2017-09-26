@@ -8,5 +8,5 @@
 ##############################################################################
 
 from . import notification
-from . import notification_time
+from . import notification_message
 from . import notification_time_type

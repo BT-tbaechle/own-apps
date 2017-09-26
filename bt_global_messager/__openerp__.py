@@ -22,7 +22,7 @@
     ],
     'data': [
         'data/notification.time.type.csv',
-        'views/notification_time_views.xml',
+        'views/notification_message_views.xml',
         'views/notification_views.xml',
     ],
     'installable': True,

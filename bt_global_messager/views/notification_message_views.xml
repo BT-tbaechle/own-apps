@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-         <!-- Notification Time Views -->
-        <record model="ir.ui.view" id="notification_time_tree_view">
-            <field name="name">notification.time.tree.view</field>
-            <field name="model">notification.time</field>
+         <!-- Notification Message Views -->
+        <record model="ir.ui.view" id="notification_message_tree_view">
+            <field name="name">notification.message.tree.view</field>
+            <field name="model">notification.message</field>
             <field name="arch" type="xml">
-                <tree string="Notification Time List" editable="bottom">
+                <tree string="Notification Message List" editable="bottom">
                     <field name="notification_id"/>
                     <field name="notify_time_type"/>
                     <field name="notification_offset" widget="float_time"
@@ -20,11 +20,11 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="notification_time_form_view">
-            <field name="name">notification.time.form.view</field>
-            <field name="model">notification.time</field>
+        <record model="ir.ui.view" id="notification_message_form_view">
+            <field name="name">notification.message.form.view</field>
+            <field name="model">notification.message</field>
             <field name="arch" type="xml">
-                <form string="Notification Time">
+                <form string="Notification Message">
                     <sheet>
                         <group>
                             <group>

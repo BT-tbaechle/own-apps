@@ -6,15 +6,17 @@
             <field name="name">notification.message.tree.view</field>
             <field name="model">notification.message</field>
             <field name="arch" type="xml">
-                <tree string="Notification Message List" editable="bottom">
+                <tree string="Notification Message List">
                     <field name="notification_id"/>
+                    <field name="name"/>
+                    <field name="custom_message"/>
                     <field name="notify_time_type"/>
-                    <field name="notification_offset" widget="float_time"
-                           attrs="{'invisible': [('notify_time_type', '!=', %(notification_time_type_rel)d)]}"/>
+                    <field name="notification_offset"
+                           attrs="{'readonly': [('notify_time_type', '!=', %(notification_time_type_rel)d)]}"/>
                     <field name="notification_date"
-                           attrs="{'invisible': [('notify_time_type', '!=', %(notification_time_type_abs)d)]}"/>
+                           attrs="{'readonly': [('notify_time_type', '!=', %(notification_time_type_abs)d)]}"/>
                     <field name="notification_time" widget="float_time"
-                           attrs="{'invisible': [('notify_time_type', '!=', %(notification_time_type_abs)d)]}"/>
+                           attrs="{'readonly': [('notify_time_type', '!=', %(notification_time_type_abs)d)]}"/>
                     <field name="is_sent"/>
                 </tree>
             </field>
@@ -30,17 +32,33 @@
                             <group>
                                 <field name="notification_id"/>
                                 <field name="notify_time_type"/>
+                                <field name="custom_message"/>
                                 <field name="is_sent"/>
                             </group>
                             <group>
-                                <field name="notification_offset" widget="float_time"
-                                       attrs="{'invisible': [('notify_time_type', '!=', %(notification_time_type_rel)d)]}"/>
+                                <field name="notification_offset"
+                                       attrs="{'readonly': [('notify_time_type', '!=', %(notification_time_type_rel)d)]}"/>
                                 <field name="notification_date"
-                                       attrs="{'invisible': [('notify_time_type', '!=', %(notification_time_type_abs)d)]}"/>
+                                       attrs="{'readonly': [('notify_time_type', '!=', %(notification_time_type_abs)d)]}"/>
                                 <field name="notification_time" widget="float_time"
-                                       attrs="{'invisible': [('notify_time_type', '!=', %(notification_time_type_abs)d)]}"/>
+                                       attrs="{'readonly': [('notify_time_type', '!=', %(notification_time_type_abs)d)]}"/>
                             </group>
                         </group>
+                        <notebook>
+                            <page name="message_data_page" string="Message">
+                                <group>
+                                    <group>
+                                        <field name="name" attrs="{'readonly': [('custom_message', '=', False)]}"/>
+                                        <field name="message" attrs="{'readonly': [('custom_message', '=', False)]}"/>
+                                    </group>
+                                    <group>
+                                        <field name="icon" widget="image"
+                                               attrs="{'readonly': [('custom_message', '=', False)]}"/>
+                                        <field name="timeout" attrs="{'readonly': [('custom_message', '=', False)]}"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>

@@ -21,7 +21,7 @@
         'web_notify',
     ],
     'data': [
-        'data/notification.time.type.csv',
+        'data/notification_time_type_data.xml',
         'views/notification_message_views.xml',
         'views/notification_views.xml',
     ],

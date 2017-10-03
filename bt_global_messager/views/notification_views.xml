@@ -8,10 +8,9 @@
             <field name="arch" type="xml">
                 <tree string="Notification List">
                     <field name="name"/>
-                    <field name="message"/>
                     <field name="send_manually"/>
                     <field name="event_date"/>
-                    <field name="event_time"/>
+                    <field name="event_time" widget="float_time"/>
                     <field name="notification_time_names"/>
                 </tree>
             </field>
@@ -22,6 +21,10 @@
             <field name="model">notification.notification</field>
             <field name="arch" type="xml">
                 <form string="Notification">
+                    <header>
+                        <button string="Send" name="send_notification" type="object"
+							attrs="{'invisible': [('send_manually', '=', False)]}"/>
+                    </header>
                     <sheet>
                         <h2>
                             <group>
@@ -42,16 +45,17 @@
                         </group>
                         <notebook>
                             <page name="notification_times_page" string="Notification Times">
-                                <field name="notification_time_ids" context="{'default_notification_id': active_id}">
-                                    <tree editable="top">
+                                <field name="notification_time_ids" context="{'default_notification_id': active_id, 'default_name': name, 'default_message': message, 'default_timeout': timeout}"
+                                       attrs="{'readonly': [('send_manually', '=', True)]}">
+                                    <tree>
                                         <field name="notification_id" invisible="True"/>
                                         <field name="notify_time_type"/>
-                                        <field name="notification_offset"
-                                               attrs="{'readonly': [('notify_time_type', '!=', %(notification_time_type_rel)d)]}"/>
                                         <field name="notification_date"
                                                attrs="{'readonly': [('notify_time_type', '!=', %(notification_time_type_abs)d)]}"/>
                                         <field name="notification_time" widget="float_time"
                                                attrs="{'readonly': [('notify_time_type', '!=', %(notification_time_type_abs)d)]}"/>
+                                        <field name="notification_offset"
+                                               attrs="{'readonly': [('notify_time_type', '!=', %(notification_time_type_rel)d)]}"/>
                                         <field name="is_sent"/>
                                     </tree>
                                 </field>
@@ -90,12 +94,8 @@
         <!-- Messager Notification Menuitems -->
         <menuitem id="global_messager_main_menu" name="Global Messager"
                   parent="base.menu_administration"
-                  sequence="5"/>
-
-        <menuitem id="messager_notification_menu" name="Notifications"
-                  parent="global_messager_main_menu"
                   action="notification_view_action"
-                  sequence="1"/>
+                  sequence="5"/>
 
     </data>
 </openerp>

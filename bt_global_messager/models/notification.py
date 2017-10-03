@@ -7,6 +7,7 @@
 #    See LICENSE file for full licensing details.
 ##############################################################################
 
+from datetime import datetime
 from openerp import models, fields, api
 
 
@@ -35,3 +36,26 @@ class Notification(models.Model):
         if self.send_manually:
             self.event_date = False
             self.event_time = False
+
+    @api.multi
+    def write(self, vals):
+        if vals.get('send_manually'):
+            vals['event_date'] = False
+            vals['event_time'] = False
+        return super(Notification, self).write(vals)
+
+    @api.multi
+    def send_notification(self):
+        self.env.user.notify_warning(self.message, title=self.name, sticky=True)
+
+        values = {'name': self.name,
+                  'message': self.message,
+                  'notification_id': self.id,
+                  'icon': self.icon,
+                  'timeout': self.timeout,
+                  'notify_time_type': self.env.ref('bt_global_messager.notification_time_type_abs').id,
+                  'notification_date': fields.Date.today(),
+                  'is_sent': True}
+        time_now = datetime.now().time()
+        values['notification_time'] = time_now.hour + time_now.minute/60.0
+        self.env['notification.message'].create(values)

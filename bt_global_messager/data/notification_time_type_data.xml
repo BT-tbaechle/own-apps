@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <record model="notification.time.type" id="notification_time_type_rel">
+            <field name="name">relative</field>
+        </record>
+        <record model="notification.time.type" id="notification_time_type_abs">
+            <field name="name">absolute</field>
+        </record>
+    </data>
+</odoo>

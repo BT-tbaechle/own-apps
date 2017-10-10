@@ -31,7 +31,8 @@ class NotificationMessage(models.Model):
     event_date = fields.Date(string="Event Date", related='notification_id.event_date', readonly=True)
     event_time = fields.Float(string="Event Time", related='notification_id.event_time', readonly=True)
 
-    notify_time_type = fields.Many2one('notification.time.type', string="Type", required=True)
+    notify_time_type_id = fields.Many2one('notification.time.type', string="Type", required=True)
+    notify_type_ids = fields.Many2many('notification.type', string="Notification Type", required=True)
 
     notification_offset = fields.Integer(string="Offset (min)")
     notification_date = fields.Date(string="Send Date")
@@ -39,13 +40,21 @@ class NotificationMessage(models.Model):
 
     is_sent = fields.Boolean(string="Sent", readonly=True)
 
+    @api.onchange('custom_message')
+    def _reset_to_default_msg(self):
+        if not self.custom_message:
+            self.name = self.notification_id.name
+            self.message = self.notification_id.message
+            self.icon = self.notification_id.icon
+            self.timeout = self.notification_id.timeout
+
 
     # @api.onchange('notification_date', 'notification_time', 'event_date', 'event_time')
     # def _get_event_offset(self):
     #     notification_offset = 0
     #     if (self.notification_date and self.notification_time and
     #             self.event_date and self.event_time and
-    #             self.notify_time_type.id == self.env.ref('bt_global_messager.notification_time_type_abs').id):
+    #             self.notify_time_type_id.id == self.env.ref('bt_global_messager.notification_time_type_abs').id):
     #         time = '{0:02.0f}:{1:02.0f}'.format(*divmod(self.notification_time * 60, 60))
     #         message_date_str = "{} {}".format(self.notification_date, time)
     #         message_datetime_object = datetime.strptime(message_date_str, '%Y-%m-%d %H:%M')
@@ -59,6 +68,6 @@ class NotificationMessage(models.Model):
     #
     # @api.onchange('notification_offset', 'event_date', 'event_time')
     # def _get_event_date_time(self):
-    #     if self.notify_time_type.id == self.env.ref('bt_global_messager.notification_time_type_rel').id:
+    #     if self.notify_time_type_id.id == self.env.ref('bt_global_messager.notification_time_type_rel').id:
     #         notification_time = 6.0
     #         return {'value': {'notification_time': notification_time}}

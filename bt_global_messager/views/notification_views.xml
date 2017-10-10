@@ -42,20 +42,24 @@
                                 <field name="event_time" attrs="{'readonly': [('send_manually', '=', True)]}" widget="float_time"/>
                                 <field name="timeout"/>
                             </group>
+                            <group>
+                                <field name="notify_type_ids"/>
+                            </group>
                         </group>
                         <notebook>
                             <page name="notification_times_page" string="Notification Times">
-                                <field name="notification_time_ids" context="{'default_notification_id': active_id, 'default_name': name, 'default_message': message, 'default_timeout': timeout}"
+                                <field name="notification_time_ids" context="{'default_notification_id': active_id, 'default_name': name, 'default_message': message, 'default_timeout': timeout, 'default_notify_type_ids': notify_type_ids}"
                                        attrs="{'readonly': [('send_manually', '=', True)]}">
                                     <tree>
                                         <field name="notification_id" invisible="True"/>
-                                        <field name="notify_time_type"/>
+                                        <field name="notify_time_type_id"/>
                                         <field name="notification_date"
-                                               attrs="{'readonly': [('notify_time_type', '!=', %(notification_time_type_abs)d)]}"/>
+                                               attrs="{'readonly': [('notify_time_type_id', '!=', %(notification_time_type_abs)d)]}"/>
                                         <field name="notification_time" widget="float_time"
-                                               attrs="{'readonly': [('notify_time_type', '!=', %(notification_time_type_abs)d)]}"/>
+                                               attrs="{'readonly': [('notify_time_type_id', '!=', %(notification_time_type_abs)d)]}"/>
                                         <field name="notification_offset"
-                                               attrs="{'readonly': [('notify_time_type', '!=', %(notification_time_type_rel)d)]}"/>
+                                               attrs="{'readonly': [('notify_time_type_id', '!=', %(notification_time_type_rel)d)]}"/>
+                                        <field name="custom_message"/>
                                         <field name="is_sent"/>
                                     </tree>
                                 </field>

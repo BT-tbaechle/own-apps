@@ -10,13 +10,14 @@
                     <field name="notification_id"/>
                     <field name="name"/>
                     <field name="custom_message"/>
-                    <field name="notify_time_type"/>
+                    <field name="notify_time_type_id"/>
+                    <field name="notify_type_ids" widget="many2many_tags"/>
                     <field name="notification_offset"
-                           attrs="{'readonly': [('notify_time_type', '!=', %(notification_time_type_rel)d)]}"/>
+                           attrs="{'readonly': [('notify_time_type_id', '!=', %(notification_time_type_rel)d)]}"/>
                     <field name="notification_date"
-                           attrs="{'readonly': [('notify_time_type', '!=', %(notification_time_type_abs)d)]}"/>
+                           attrs="{'readonly': [('notify_time_type_id', '!=', %(notification_time_type_abs)d)]}"/>
                     <field name="notification_time" widget="float_time"
-                           attrs="{'readonly': [('notify_time_type', '!=', %(notification_time_type_abs)d)]}"/>
+                           attrs="{'readonly': [('notify_time_type_id', '!=', %(notification_time_type_abs)d)]}"/>
                     <field name="is_sent"/>
                 </tree>
             </field>
@@ -31,21 +32,26 @@
                         <group>
                             <group>
                                 <field name="notification_id"/>
-                                <field name="notify_time_type"/>
-                                <field name="custom_message"/>
+                                <field name="notify_time_type_id"/>
                                 <field name="is_sent"/>
                             </group>
                             <group>
                                 <field name="notification_offset"
-                                       attrs="{'readonly': [('notify_time_type', '!=', %(notification_time_type_rel)d)]}"/>
+                                       attrs="{'readonly': [('notify_time_type_id', '!=', %(notification_time_type_rel)d)]}"/>
                                 <field name="notification_date"
-                                       attrs="{'readonly': [('notify_time_type', '!=', %(notification_time_type_abs)d)]}"/>
+                                       attrs="{'readonly': [('notify_time_type_id', '!=', %(notification_time_type_abs)d)]}"/>
                                 <field name="notification_time" widget="float_time"
-                                       attrs="{'readonly': [('notify_time_type', '!=', %(notification_time_type_abs)d)]}"/>
+                                       attrs="{'readonly': [('notify_time_type_id', '!=', %(notification_time_type_abs)d)]}"/>
+                            </group>
+                            <group>
+                                <field name="notify_type_ids"/>
                             </group>
                         </group>
                         <notebook>
                             <page name="message_data_page" string="Message">
+                                <group>
+                                    <field name="custom_message"/>
+                                </group>
                                 <group>
                                     <group>
                                         <field name="name" attrs="{'readonly': [('custom_message', '=', False)]}"/>

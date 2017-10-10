@@ -14,8 +14,8 @@ from openerp import models, fields, api
 class Notification(models.Model):
     _name = 'notification.notification'
 
-    name = fields.Char(string="Title")
-    message = fields.Text(string="Text")
+    name = fields.Char(string="Title", required=True)
+    message = fields.Text(string="Text", required=True)
     icon = fields.Binary(string="Icon")
     timeout = fields.Integer(string="Timeout (sec)")
 
@@ -26,6 +26,7 @@ class Notification(models.Model):
                                             string="Notification Times")
     notification_time_names = fields.Char(string="Notification Times",
                                           compute='_generate_notify_time_names')
+    notify_type_ids = fields.Many2many('notification.type', string="Notification Type")
 
     @api.depends('notification_time_ids')
     def _generate_notify_time_names(self):
@@ -53,7 +54,7 @@ class Notification(models.Model):
                   'notification_id': self.id,
                   'icon': self.icon,
                   'timeout': self.timeout,
-                  'notify_time_type': self.env.ref('bt_global_messager.notification_time_type_abs').id,
+                  'notify_time_type_id': self.env.ref('bt_global_messager.notification_time_type_abs').id,
                   'notification_date': fields.Date.today(),
                   'is_sent': True}
         time_now = datetime.now().time()

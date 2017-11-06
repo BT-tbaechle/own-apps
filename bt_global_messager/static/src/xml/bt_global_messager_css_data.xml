@@ -1,0 +1,9 @@
+<openerp>
+    <data>
+        <template id="assets_backend" name="bt_global_messager_css_assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/bt_global_messager/static/src/css/bt_global_messager.css"/>
+            </xpath>
+        </template>
+    </data>
+</openerp>

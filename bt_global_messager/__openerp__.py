@@ -23,11 +23,12 @@
     'data': [
         'data/notification_time_type_data.xml',
         'data/notification_type_data.xml',
+        'static/src/xml/bt_global_messager_css_data.xml',
         'views/notification_message_views.xml',
         'views/notification_views.xml',
         'security/ir.model.access.csv',
     ],
     'installable': True,
-    'application': True,
+    'application': False,
     'auto_install': False,
 }

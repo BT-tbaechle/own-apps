@@ -34,7 +34,7 @@
                         <group>
                             <group>
                                 <field name="message"/>
-                                <field name="icon" widget="image"/>
+                                <field name="icon" widget="image" class="message_icon_size"/>
                             </group>
                             <group>
                                 <field name="send_manually"/>

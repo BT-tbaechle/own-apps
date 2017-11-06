@@ -9,6 +9,7 @@
 
 from datetime import datetime
 from openerp import models, fields, api
+from openerp.tools import image_resize_image
 
 
 class NotificationMessage(models.Model):
@@ -26,7 +27,7 @@ class NotificationMessage(models.Model):
     custom_message = fields.Boolean(string="Customise Message")
     name = fields.Char(string="Title")
     message = fields.Text(string="Text")
-    icon = fields.Binary(string="Icon", default=_get_default_icon)
+    icon = fields.Binary(string="Icon", attachment=True, default=_get_default_icon)
     timeout = fields.Integer(string="Timeout (sec)")
     event_date = fields.Date(string="Event Date", related='notification_id.event_date', readonly=True)
     event_time = fields.Float(string="Event Time", related='notification_id.event_time', readonly=True)
@@ -45,8 +46,20 @@ class NotificationMessage(models.Model):
         if not self.custom_message:
             self.name = self.notification_id.name
             self.message = self.notification_id.message
-            self.icon = self.notification_id.icon
+            self.icon = self._get_default_icon()
             self.timeout = self.notification_id.timeout
+
+    @api.model
+    def create(self, vals):
+        if 'project_img' in vals:
+            vals['project_img'] = image_resize_image(vals['project_img'], size=(512, None))
+        return super(NotificationMessage, self).create(vals)
+
+    @api.multi
+    def write(self, vals):
+        if 'project_img' in vals:
+            vals['project_img'] = image_resize_image(vals['project_img'], size=(512, None))
+        return super(NotificationMessage, self).write(vals)
 
 
     # @api.onchange('notification_date', 'notification_time', 'event_date', 'event_time')

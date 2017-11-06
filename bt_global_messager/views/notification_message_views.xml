@@ -31,36 +31,36 @@
                     <sheet>
                         <group>
                             <group>
-                                <field name="notification_id"/>
-                                <field name="notify_time_type_id"/>
+                                <field name="notification_id" invisible="True"/>
+                                <field name="notify_time_type_id" attrs="{'readonly': [('is_sent', '=', True)]}"/>
                                 <field name="is_sent"/>
                             </group>
                             <group>
                                 <field name="notification_offset"
-                                       attrs="{'readonly': [('notify_time_type_id', '!=', %(notification_time_type_rel)d)]}"/>
+                                       attrs="{'readonly': ['|',('notify_time_type_id', '!=', %(notification_time_type_rel)d),('is_sent', '=', True)]}"/>
                                 <field name="notification_date"
-                                       attrs="{'readonly': [('notify_time_type_id', '!=', %(notification_time_type_abs)d)]}"/>
+                                       attrs="{'readonly': ['|',('notify_time_type_id', '!=', %(notification_time_type_abs)d),('is_sent', '=', True)]}"/>
                                 <field name="notification_time" widget="float_time"
-                                       attrs="{'readonly': [('notify_time_type_id', '!=', %(notification_time_type_abs)d)]}"/>
+                                       attrs="{'readonly': ['|',('notify_time_type_id', '!=', %(notification_time_type_abs)d),('is_sent', '=', True)]}"/>
                             </group>
                             <group>
-                                <field name="notify_type_ids"/>
+                                <field name="notify_type_ids" attrs="{'readonly': [('is_sent', '=', True)]}"/>
                             </group>
                         </group>
                         <notebook>
                             <page name="message_data_page" string="Message">
                                 <group>
-                                    <field name="custom_message"/>
+                                    <field name="custom_message" attrs="{'readonly': [('is_sent', '=', True)]}"/>
                                 </group>
                                 <group>
                                     <group>
-                                        <field name="name" attrs="{'readonly': [('custom_message', '=', False)]}"/>
-                                        <field name="message" attrs="{'readonly': [('custom_message', '=', False)]}"/>
+                                        <field name="name" attrs="{'readonly': ['|',('custom_message', '=', False),('is_sent', '=', True)]}"/>
+                                        <field name="message" attrs="{'readonly': ['|',('custom_message', '=', False),('is_sent', '=', True)]}"/>
                                     </group>
                                     <group>
-                                        <field name="icon" widget="image"
-                                               attrs="{'readonly': [('custom_message', '=', False)]}"/>
-                                        <field name="timeout" attrs="{'readonly': [('custom_message', '=', False)]}"/>
+                                        <field name="icon" widget="image" class="message_icon_size"
+                                               attrs="{'readonly': ['|',('custom_message', '=', False),('is_sent', '=', True)]}"/>
+                                        <field name="timeout" attrs="{'readonly': ['|',('custom_message', '=', False),('is_sent', '=', True)]}"/>
                                     </group>
                                 </group>
                             </page>

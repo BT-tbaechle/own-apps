@@ -9,6 +9,7 @@
 
 from datetime import datetime
 from openerp import models, fields, api
+from openerp.tools import image_resize_image
 
 
 class Notification(models.Model):
@@ -16,7 +17,7 @@ class Notification(models.Model):
 
     name = fields.Char(string="Title", required=True)
     message = fields.Text(string="Text", required=True)
-    icon = fields.Binary(string="Icon")
+    icon = fields.Binary(string="Icon", attachment=True)
     timeout = fields.Integer(string="Timeout (sec)")
 
     send_manually = fields.Boolean(string="Send manually")
@@ -60,3 +61,15 @@ class Notification(models.Model):
         time_now = datetime.now().time()
         values['notification_time'] = time_now.hour + time_now.minute/60.0
         self.env['notification.message'].create(values)
+
+    @api.model
+    def create(self, vals):
+        if 'project_img' in vals:
+            vals['project_img'] = image_resize_image(vals['project_img'], size=(512, None))
+        return super(Notification, self).create(vals)
+
+    @api.multi
+    def write(self, vals):
+        if 'project_img' in vals:
+            vals['project_img'] = image_resize_image(vals['project_img'], size=(512, None))
+        return super(Notification, self).write(vals)

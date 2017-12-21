@@ -12,7 +12,9 @@
                     <field name="custom_message"/>
                     <field name="notify_time_type_id"/>
                     <field name="notify_type_ids" widget="many2many_tags"/>
-                    <field name="notification_offset"
+                    <field name="notification_offset_unit"
+                           attrs="{'readonly': [('notify_time_type_id', '!=', %(notification_time_type_rel)d)]}"/>
+                    <field name="notification_offset_as_unit"
                            attrs="{'readonly': [('notify_time_type_id', '!=', %(notification_time_type_rel)d)]}"/>
                     <field name="notification_date"
                            attrs="{'readonly': [('notify_time_type_id', '!=', %(notification_time_type_abs)d)]}"/>
@@ -36,12 +38,14 @@
                                 <field name="is_sent"/>
                             </group>
                             <group>
-                                <field name="notification_offset"
-                                       attrs="{'readonly': ['|',('notify_time_type_id', '!=', %(notification_time_type_rel)d),('is_sent', '=', True)]}"/>
+                                <field name="notification_offset_unit"
+                                       attrs="{'invisible': [('notify_time_type_id', '!=', %(notification_time_type_rel)d)]}"/>
+                                <field name="notification_offset_as_unit"
+                                       attrs="{'invisible': [('notify_time_type_id', '!=', %(notification_time_type_rel)d)]}"/>
                                 <field name="notification_date"
-                                       attrs="{'readonly': ['|',('notify_time_type_id', '!=', %(notification_time_type_abs)d),('is_sent', '=', True)]}"/>
+                                       attrs="{'invisible': ['|',('notify_time_type_id', '!=', %(notification_time_type_abs)d),('is_sent', '=', True)]}"/>
                                 <field name="notification_time" widget="float_time"
-                                       attrs="{'readonly': ['|',('notify_time_type_id', '!=', %(notification_time_type_abs)d),('is_sent', '=', True)]}"/>
+                                       attrs="{'invisible': ['|',('notify_time_type_id', '!=', %(notification_time_type_abs)d),('is_sent', '=', True)]}"/>
                             </group>
                             <group>
                                 <field name="notify_type_ids" attrs="{'readonly': [('is_sent', '=', True)]}"/>

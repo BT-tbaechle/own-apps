@@ -53,12 +53,8 @@
                                     <tree>
                                         <field name="notification_id" invisible="True"/>
                                         <field name="notify_time_type_id"/>
-                                        <field name="notification_date"
-                                               attrs="{'readonly': [('notify_time_type_id', '!=', %(notification_time_type_abs)d)]}"/>
-                                        <field name="notification_time" widget="float_time"
-                                               attrs="{'readonly': [('notify_time_type_id', '!=', %(notification_time_type_abs)d)]}"/>
-                                        <field name="notification_offset"
-                                               attrs="{'readonly': [('notify_time_type_id', '!=', %(notification_time_type_rel)d)]}"/>
+                                        <field name="effective_notification_date"/>
+                                        <field name="effective_notification_time" widget="float_time"/>
                                         <field name="custom_message"/>
                                         <field name="is_sent"/>
                                     </tree>

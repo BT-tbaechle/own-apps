@@ -7,9 +7,19 @@
 #    See LICENSE file for full licensing details.
 ##############################################################################
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from openerp import models, fields, api
 from openerp.tools import image_resize_image
+
+OFFSET_INTERVALS = [('minutes', "Minutes"),
+                    ('hours', "Hours"),
+                    ('days', "Days"),
+                    ('weeks', "Weeks")]
+
+OFFSET_MULTIPLIER = {'minutes': 1,
+                     'hours': 60,
+                     'days': 1440,
+                     'weeks': 10080}
 
 
 class NotificationMessage(models.Model):
@@ -29,15 +39,19 @@ class NotificationMessage(models.Model):
     message = fields.Text(string="Text")
     icon = fields.Binary(string="Icon", attachment=True, default=_get_default_icon)
     timeout = fields.Integer(string="Timeout (sec)")
-    event_date = fields.Date(string="Event Date", related='notification_id.event_date', readonly=True)
-    event_time = fields.Float(string="Event Time", related='notification_id.event_time', readonly=True)
+    event_date = fields.Date(string="Event Date", related='notification_id.event_date', readonly=True, store=True)
+    event_time = fields.Float(string="Event Time", related='notification_id.event_time', readonly=True, store=True)
 
     notify_time_type_id = fields.Many2one('notification.time.type', string="Type", required=True)
     notify_type_ids = fields.Many2many('notification.type', string="Notification Type", required=True)
 
-    notification_offset = fields.Integer(string="Offset (min)")
+    notification_offset = fields.Integer(string="Offset (min)", compute='_compute_minute_offset', store=True)
+    notification_offset_as_unit = fields.Integer(string="Offset")
+    notification_offset_unit = fields.Selection(OFFSET_INTERVALS, string="Offset Unit", default=OFFSET_INTERVALS[0][0])
     notification_date = fields.Date(string="Send Date")
     notification_time = fields.Float(string="Send Time")
+    effective_notification_date = fields.Date(string="Send Date", compute='_compute_effective_date_time', store=True)
+    effective_notification_time = fields.Float(string="Send Time", compute='_compute_effective_date_time', store=True)
 
     is_sent = fields.Boolean(string="Sent", readonly=True)
 
@@ -52,35 +66,52 @@ class NotificationMessage(models.Model):
     @api.model
     def create(self, vals):
         if 'project_img' in vals:
-            vals['project_img'] = image_resize_image(vals['project_img'], size=(512, None))
+            vals['project_img'] = image_resize_image(vals['project_img'], size=(100, None))
         return super(NotificationMessage, self).create(vals)
 
     @api.multi
     def write(self, vals):
         if 'project_img' in vals:
-            vals['project_img'] = image_resize_image(vals['project_img'], size=(512, None))
+            vals['project_img'] = image_resize_image(vals['project_img'], size=(100, None))
         return super(NotificationMessage, self).write(vals)
 
+    def _send_due_messages(self, cr, uid, *args, **kwargs):
+        time_now = datetime.now().time()
+        due_message_ids = self.pool['notification.message'].search(cr, uid,
+                                                                   ['&',
+                                                                    ('is_sent', '=', False),
+                                                                    '|',
+                                                                    ('effective_notification_date', '<', fields.Date.today()),
+                                                                    '&',
+                                                                    ('effective_notification_date', '=', fields.Date.today()),
+                                                                    ('effective_notification_time', '<=', time_now.hour + time_now.minute / 60.0),
+                                                                    ])
+        due_messages = self.browse(cr, uid, due_message_ids)
+        for message in due_messages:
+            users = self.pool['res.users'].browse(cr, uid, self.pool['res.users'].search(cr, uid, []))
+            users.notify_warning(message.message, title=message.name, sticky=True)
+        due_messages.write({'is_sent':True})
 
-    # @api.onchange('notification_date', 'notification_time', 'event_date', 'event_time')
-    # def _get_event_offset(self):
-    #     notification_offset = 0
-    #     if (self.notification_date and self.notification_time and
-    #             self.event_date and self.event_time and
-    #             self.notify_time_type_id.id == self.env.ref('bt_global_messager.notification_time_type_abs').id):
-    #         time = '{0:02.0f}:{1:02.0f}'.format(*divmod(self.notification_time * 60, 60))
-    #         message_date_str = "{} {}".format(self.notification_date, time)
-    #         message_datetime_object = datetime.strptime(message_date_str, '%Y-%m-%d %H:%M')
-    #         time = '{0:02.0f}:{1:02.0f}'.format(*divmod(self.event_time * 60, 60))
-    #         event_date_str = "{} {}".format(self.event_date, time)
-    #         event_datetime_object = datetime.strptime(event_date_str, '%Y-%m-%d %H:%M')
-    #         offset = event_datetime_object - message_datetime_object
-    #         notification_offset = int(offset.total_seconds() / 60)
-    #     return {'value': {'notification_offset': notification_offset}}
-    #
-    #
-    # @api.onchange('notification_offset', 'event_date', 'event_time')
-    # def _get_event_date_time(self):
-    #     if self.notify_time_type_id.id == self.env.ref('bt_global_messager.notification_time_type_rel').id:
-    #         notification_time = 6.0
-    #         return {'value': {'notification_time': notification_time}}
+    @api.depends('notification_offset_as_unit', 'notification_offset_unit')
+    def _compute_minute_offset(self):
+        for record in self:
+            if record.notification_offset_as_unit and record.notification_offset_unit:
+                multiplier = OFFSET_MULTIPLIER[record.notification_offset_unit]
+                record.notification_offset = record.notification_offset_as_unit * multiplier
+
+    @api.depends('notification_date', 'notification_time', 'event_date', 'event_time', 'notification_offset')
+    def _compute_effective_date_time(self):
+        for record in self:
+            if record.notify_time_type_id.id == self.env.ref('bt_global_messager.notification_time_type_rel').id:
+                if record.notification_offset and record.event_time and record.event_date:
+                    minutes = (record.event_time - int(record.event_time)) * 60
+                    event_date_str = "{} {}:{}".format(record.event_date, int(record.event_time), int(minutes))
+                    event_datetime_object = datetime.strptime(event_date_str, '%Y-%m-%d %H:%M')
+                    notify_datetime_object = event_datetime_object + timedelta(minutes=record.notification_offset)
+                    record.effective_notification_date = notify_datetime_object.date().strftime('%Y-%m-%d')
+                    hours_float = notify_datetime_object.hour + notify_datetime_object.minute/60.0
+                    record.effective_notification_time = hours_float
+            else:
+                record.effective_notification_date = record.notification_date
+                record.effective_notification_time = record.notification_time
+

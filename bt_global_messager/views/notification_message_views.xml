@@ -58,13 +58,13 @@
                                 </group>
                                 <group>
                                     <group>
-                                        <field name="name" attrs="{'readonly': ['|',('custom_message', '=', False),('is_sent', '=', True)]}"/>
-                                        <field name="message" attrs="{'readonly': ['|',('custom_message', '=', False),('is_sent', '=', True)]}"/>
+                                        <field name="name" attrs="{'invisible': ['|',('custom_message', '=', False),('is_sent', '=', True)]}"/>
+                                        <field name="message" attrs="{'invisible': ['|',('custom_message', '=', False),('is_sent', '=', True)]}"/>
                                     </group>
                                     <group>
                                         <field name="icon" widget="image" class="message_icon_size"
-                                               attrs="{'readonly': ['|',('custom_message', '=', False),('is_sent', '=', True)]}"/>
-                                        <field name="timeout" attrs="{'readonly': ['|',('custom_message', '=', False),('is_sent', '=', True)]}"/>
+                                               attrs="{'invisible': ['|',('custom_message', '=', False),('is_sent', '=', True)]}"/>
+                                        <field name="timeout" attrs="{'invisible': ['|',('custom_message', '=', False),('is_sent', '=', True)]}"/>
                                     </group>
                                 </group>
                             </page>

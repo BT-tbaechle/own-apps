@@ -38,8 +38,8 @@
                             </group>
                             <group>
                                 <field name="send_manually"/>
-                                <field name="event_date" attrs="{'readonly': [('send_manually', '=', True)]}"/>
-                                <field name="event_time" attrs="{'readonly': [('send_manually', '=', True)]}" widget="float_time"/>
+                                <field name="event_date" attrs="{'invisible': [('send_manually', '=', True)]}"/>
+                                <field name="event_time" attrs="{'invisible': [('send_manually', '=', True)]}" widget="float_time"/>
                                 <field name="timeout"/>
                             </group>
                             <group>

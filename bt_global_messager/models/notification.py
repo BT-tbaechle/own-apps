@@ -8,6 +8,8 @@
 ##############################################################################
 
 from datetime import datetime
+
+import openerp
 from openerp import models, fields, api
 from openerp.tools import image_resize_image
 
@@ -15,9 +17,14 @@ from openerp.tools import image_resize_image
 class Notification(models.Model):
     _name = 'notification.notification'
 
+    @api.model
+    def _get_default_image(self,):
+        image = open(openerp.modules.get_module_resource('bt_global_messager', 'static/src/img', 'odoo_logo.png')).read()
+        return image.encode('base64')
+
     name = fields.Char(string="Title", required=True)
     message = fields.Text(string="Text", required=True)
-    icon = fields.Binary(string="Icon", attachment=True)
+    icon = fields.Binary(string="Icon", attachment=True, default=_get_default_image)
     timeout = fields.Integer(string="Timeout (sec)")
 
     send_manually = fields.Boolean(string="Send manually")
@@ -48,7 +55,17 @@ class Notification(models.Model):
 
     @api.multi
     def send_notification(self):
-        self.env.user.notify_warning(self.message, title=self.name, sticky=True)
+        self.env.user.notify_warning(self.message, title=self.name)
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        attachment = self.env['ir.attachment'].search([
+            ('res_model', '=', self._name),
+            ('res_id', '=', self.id),
+            ('res_field', '=', 'icon')
+        ], order="create_date", limit=1)
+        image_url = ""
+        if attachment:
+            image_url = "{}/web/content/{}".format(base_url, attachment[0].id)
+        self.env.user.notify_push(self.message, title=self.name, icon=image_url, timeout=self.timeout)
 
         values = {'name': self.name,
                   'message': self.message,
@@ -64,12 +81,12 @@ class Notification(models.Model):
 
     @api.model
     def create(self, vals):
-        if 'project_img' in vals:
-            vals['project_img'] = image_resize_image(vals['project_img'], size=(512, None))
+        if 'icon' in vals:
+            vals['icon'] = image_resize_image(vals['icon'], size=(100, None))
         return super(Notification, self).create(vals)
 
     @api.multi
     def write(self, vals):
-        if 'project_img' in vals:
-            vals['project_img'] = image_resize_image(vals['project_img'], size=(512, None))
+        if 'icon' in vals:
+            vals['icon'] = image_resize_image(vals['icon'], size=(100, None))
         return super(Notification, self).write(vals)

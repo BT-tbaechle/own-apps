@@ -1,0 +1,12 @@
+<openerp>
+    <data>
+        <template id="assets_backend" name="bt_global_messager_assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/bt_global_messager/static/src/css/bt_global_messager.css"/>
+                <script type="text/javascript" src="/bt_global_messager/static/lib/push.js-1.0.5/js/push.js"></script>
+                <script type="text/javascript" src="/bt_global_messager/static/lib/push.js-1.0.5/js/serviceWorker.js"></script>
+                <script type="text/javascript" src="/bt_global_messager/static/src/js/web_client_ext.js"></script>
+            </xpath>
+        </template>
+    </data>
+</openerp>

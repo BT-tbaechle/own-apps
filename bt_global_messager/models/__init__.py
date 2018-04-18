@@ -11,3 +11,4 @@ from . import notification
 from . import notification_message
 from . import notification_time_type
 from . import notification_type
+from . import res_users_ext

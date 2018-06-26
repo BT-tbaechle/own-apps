@@ -7,8 +7,5 @@
         <record model="notification.type" id="notification_type_desktop">
             <field name="name">Desktop Pop-Up</field>
         </record>
-        <record model="notification.type" id="notification_type_email">
-            <field name="name">E-Mail</field>
-        </record>
     </data>
 </odoo>

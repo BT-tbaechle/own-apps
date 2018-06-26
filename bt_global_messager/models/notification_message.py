@@ -75,10 +75,10 @@ class NotificationMessage(models.Model):
             vals['project_img'] = image_resize_image(vals['project_img'], size=(100, None))
         return super(NotificationMessage, self).write(vals)
 
-    def _send_due_messages(self, cr, uid, *args, **kwargs):
+    @api.model
+    def _send_due_messages(self, ids=[]):
         time_now = datetime.now().time()
-        due_message_ids = self.pool['notification.message'].search(cr, uid,
-                                                                   ['&',
+        due_message_ids = self.env['notification.message'].search(['&',
                                                                     ('is_sent', '=', False),
                                                                     '|',
                                                                     ('effective_notification_date', '<', fields.Date.today()),
@@ -86,11 +86,20 @@ class NotificationMessage(models.Model):
                                                                     ('effective_notification_date', '=', fields.Date.today()),
                                                                     ('effective_notification_time', '<=', time_now.hour + time_now.minute / 60.0),
                                                                     ])
-        due_messages = self.browse(cr, uid, due_message_ids)
-        for message in due_messages:
-            users = self.pool['res.users'].browse(cr, uid, self.pool['res.users'].search(cr, uid, []))
+        for message in due_message_ids:
+            users = self.env['res.users'].search([])
             users.notify_warning(message.message, title=message.name, sticky=True)
-        due_messages.write({'is_sent':True})
+            base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+            attachment = self.env['ir.attachment'].search([
+                                                               ('res_model', '=', message._name),
+                                                               ('res_id', '=', message.id),
+                                                               ('res_field', '=', 'icon')
+                                                           ], order="create_date", limit=1)
+            image_url = ""
+            if attachment:
+                image_url = "{}/web/content/{}".format(base_url, attachment[0].id)
+            users.notify_push(message.message, title=message.name, icon=image_url, timeout=self.timeout)
+            message.write({'is_sent':True})
 
     @api.depends('notification_offset_as_unit', 'notification_offset_unit')
     def _compute_minute_offset(self):

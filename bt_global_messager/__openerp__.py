@@ -21,7 +21,6 @@
         'web_notify',
     ],
     'data': [
-        'data/notification_time_type_data.xml',
         'data/notification_type_data.xml',
         'data/ir_cron_data.xml',
         'static/src/xml/bt_global_messager_static_data.xml',

@@ -94,8 +94,9 @@
 
         <!-- Messager Notification Menuitems -->
         <menuitem id="global_messager_main_menu" name="Global Messager"
-                  parent="base.menu_administration"
+                  parent="mail.mail_channel_menu_root_chat"
                   action="notification_view_action"
+                  groups="base.group_configuration,base.group_system"
                   sequence="5"/>
 
     </data>

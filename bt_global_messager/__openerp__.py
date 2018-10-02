@@ -18,6 +18,7 @@
     ],
     'depends': [
         'base',
+        'mail',
         'web_notify',
     ],
     'data': [

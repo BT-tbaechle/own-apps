@@ -40,21 +40,34 @@ class NotificationMessage(models.Model):
     notification_id = fields.Many2one('notification.notification', string="Notification", required=True,
                                       on_delete='cascade')
 
-    custom_message = fields.Boolean(string="Customise Message")
-    name = fields.Char(string="Title", translate=True)
-    message = fields.Text(string="Text", translate=True)
-    icon = fields.Binary(string="Icon", attachment=True, default=_get_default_icon)
+    custom_message = fields.Boolean(string="Customize Message",
+                                    help="Choose whether you want to customize the default message.")
+    name = fields.Char(string="Title", translate=True,
+                       help="The title will be shown as the header of the notification (keep it short).")
+    message = fields.Text(string="Text", translate=True, help="The actual message.")
+    icon = fields.Binary(string="Icon", attachment=True, default=_get_default_icon,
+                         help="The icon that will be displayed by the notification \
+                             (not available for all notification types).")
     timeout = fields.Integer(string="Timeout (sec)")
-    event_datetime = fields.Datetime(string="Event Date", related='notification_id.event_datetime', readonly=True, store=True)
+    event_datetime = fields.Datetime(string="Event Date", related='notification_id.event_datetime', readonly=True,
+                                     store=True)
 
-    notify_time_type = fields.Selection(NOTIFY_TIME_TYPES, string="Type", required=True)
-    notify_type_ids = fields.Many2many('notification.type', string="Notification Type", required=True)
+    notify_time_type = fields.Selection(NOTIFY_TIME_TYPES, string="Type", required=True,
+                                        help="'relative' allows you to specifiy an offset to send a notification \
+                                        relative to the event date/time.\n 'absolute' allows you to send a \
+                                        notification at a given absolute point in time.")
+    notify_type_ids = fields.Many2many('notification.type', string="Notification Type", required=True,
+                                       help="Choose different channels to send the notifications.")
 
     notification_offset = fields.Integer(string="Offset (min)", compute='_compute_minute_offset', store=True)
-    notification_offset_as_unit = fields.Integer(string="Offset")
-    notification_offset_unit = fields.Selection(OFFSET_INTERVALS, string="Offset Unit", default=OFFSET_INTERVALS[0][0])
+    notification_offset_as_unit = fields.Integer(string="Offset", help="Offset in the chosen unit \
+                                                (negative values = before event; positive values = after event).")
+    notification_offset_unit = fields.Selection(OFFSET_INTERVALS, string="Offset Unit", default=OFFSET_INTERVALS[0][0],
+                                                help="Unit of the offset.")
     notification_datetime = fields.Datetime(string="Send Date")
-    effective_notification_datetime = fields.Datetime(string="Send Date", compute='_compute_effective_date_time', store=True)
+    effective_notification_datetime = fields.Datetime(string="Send Date", compute='_compute_effective_date_time',
+                                                      store=True,
+                                                      help="Point in time when the notification was/will be sent")
 
     is_sent = fields.Boolean(string="Sent", readonly=True)
 
@@ -80,10 +93,10 @@ class NotificationMessage(models.Model):
 
     @api.model
     def _send_due_messages(self, ids=[]):
-        datetime_now = datetime.now()
         due_message_ids = self.env['notification.message'].search(['&',
                                                                     ('is_sent', '=', False),
-                                                                    ('effective_notification_datetime', '<=', datetime.now().strftime('%Y-%m-%d %H:%M:%S'))])
+                                                                    ('effective_notification_datetime', '<=',
+                                                                     datetime.now().strftime('%Y-%m-%d %H:%M:%S'))])
         for due_message in due_message_ids:
             users = self.env['res.users'].search([])
             for user in users:

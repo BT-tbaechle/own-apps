@@ -26,17 +26,21 @@ class Notification(models.Model):
         return [self.env.ref('bt_global_messager.notification_type_odoo').id,
                 self.env.ref('bt_global_messager.notification_type_desktop').id]
 
-    name = fields.Char(string="Title", required=True, translate=True)
-    message = fields.Text(string="Text", translate=True)
-    icon = fields.Binary(string="Icon", attachment=True, default=_get_default_image)
+    name = fields.Char(string="Title", required=True, translate=True,
+                       help="The title will be shown as the header of the notification (keep it short).")
+    message = fields.Text(string="Text", translate=True, help="The actual message.")
+    icon = fields.Binary(string="Icon", attachment=True, default=_get_default_image,
+                         help="The icon that will be displayed by the notification \
+                         (not available for all notification types).")
     timeout = fields.Integer(string="Timeout (sec)")  # TODO: implement timeout for pop-up
 
-    send_manually = fields.Boolean(string="Send manually")
-    event_datetime = fields.Datetime(string="Event Time")
+    send_manually = fields.Boolean(string="Send manually", help="Enables button to send an instant message.")
+    event_datetime = fields.Datetime(string="Event Time", help="Time of the event this notification is related to.")
     notification_time_ids = fields.One2many('notification.message', inverse_name='notification_id',
                                             string="Notification Times")
     notify_type_ids = fields.Many2many('notification.type', string="Notification Type",
-                                       default=_get_default_notify_types)
+                                       default=_get_default_notify_types,
+                                       help="Choose different channels to send the notifications.")
 
     @api.one
     def copy(self, default={}):
@@ -114,13 +118,12 @@ class Notification(models.Model):
 
         if vals.get('event_datetime'):
             for message in self.notification_time_ids:
-                if message.notify_time_type == 'time_type_rel' and \
-                        self.event_datetime > message.effective_notification_datetime:
+                if message.notify_time_type == 'time_type_rel':
                     message.is_sent = False
 
         return result
 
-    @api.multi
+    @api.one
     def unlink(self):
         self.notification_time_ids.unlink()
         return super(Notification, self).unlink()

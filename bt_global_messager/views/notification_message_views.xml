@@ -54,12 +54,12 @@
                                 </group>
                                 <group>
                                     <group>
-                                        <field name="name" attrs="{'invisible': ['|',('custom_message', '=', False),('is_sent', '=', True)]}"/>
-                                        <field name="message" attrs="{'invisible': ['|',('custom_message', '=', False),('is_sent', '=', True)]}"/>
+                                        <field name="name" attrs="{'invisible': ['|',('custom_message', '=', False)], 'readonly': [('is_sent', '=', True)]}"/>
+                                        <field name="message" attrs="{'invisible': ['|',('custom_message', '=', False)], 'readonly': [('is_sent', '=', True)]}"/>
                                     </group>
                                     <group>
                                         <field name="icon" widget="image" class="message_icon_size"
-                                               attrs="{'invisible': ['|',('custom_message', '=', False),('is_sent', '=', True)]}"/>
+                                               attrs="{'invisible': ['|',('custom_message', '=', False)], 'readonly': [('is_sent', '=', True)]}"/>
                                         <field name="timeout" invisible="True"/>
                                     </group>
                                 </group>

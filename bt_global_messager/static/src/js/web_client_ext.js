@@ -36,6 +36,7 @@ odoo.define('bt_global_messager.WebClient', function (require) {
                     body: message.message,
                     icon: message.icon,
                     timeout: message.timeout,
+                    requireInteraction: true,
                     onClick: function () {
                         window.focus();
                         this.close();

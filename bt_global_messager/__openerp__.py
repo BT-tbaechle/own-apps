@@ -19,7 +19,6 @@
     'depends': [
         'base',
         'mail',
-        'web_notify',
     ],
     'data': [
         'data/notification_type_data.xml',

@@ -14,33 +14,42 @@ class ResUsersExt(models.Model):
 
     _inherit = 'res.users'
 
+    notify_channel_push_ref = fields.Char(compute='_compute_notify_channel_refs')
+    notify_channel_odoo_info_ref = fields.Char(compute='_compute_notify_channel_refs')
+    notify_channel_odoo_warn_ref = fields.Char(compute='_compute_notify_channel_refs')
+
     @api.multi
     @api.depends('create_date')
-    def _compute_channel_names(self):
+    def _compute_notify_channel_refs(self):
         for record in self:
-            res_id = record.id
-            record.notify_info_channel_name = 'notify_info_%s' % res_id
-            record.notify_warning_channel_name = 'notify_warning_%s' % res_id
-            record.notify_push_channel_name = 'notify_push_%s' % res_id
-
-    notify_push_channel_name = fields.Char(compute='_compute_channel_names')
+            rec_id = record.id
+            record.notify_channel_push_ref = 'notification_push_{}'.format(rec_id)
+            record.notify_channel_odoo_info_ref = 'notification_odoo_info_{}'.format(rec_id)
+            record.notify_channel_odoo_warn_ref = 'notification_odoo_warn_{}'.format(rec_id)
 
     @api.multi
-    def notify_push(self, message, title=None, sticky=False, icon=None, timeout=None):
+    def send_push_notification(self, message, title=None, icon=None, timeout=None):
+        title = title or _('Notification')
+        self._notification_channel('notify_channel_push_ref', message, title, icon, timeout)
+
+    @api.multi
+    def send_odoo_info_notification(self, message, title=None, sticky=False):
+        title = title or _('Information')
+        self._notification_channel('notify_channel_odoo_info_ref', message, title, sticky)
+
+    @api.multi
+    def send_odoo_warn_notification(self, message, title=None, sticky=False):
         title = title or _('Warning')
-        self._notify_channel(
-            'notify_push_channel_name', message, title, sticky, icon, timeout)
+        self._notification_channel('notify_channel_odoo_warn_ref', message, title, sticky)
 
     @api.multi
-    def _notify_channel(self, channel_name_field, message, title, sticky, icon=None, timeout=None):
-        # New channel for push.js desktop notification
-        bus_message = {
-            'message': message,
+    def _notification_channel(self, channel_ref_field, message, title, sticky=None, icon=None, timeout=None):
+        bus_dict = {
             'title': title,
+            'message': message,
             'sticky': sticky,
             'icon': icon,
             'timeout': timeout,
         }
-        notifications = [(getattr(record, channel_name_field), bus_message)
-                         for record in self]
-        self.env['bus.bus'].sendmany(notifications)
+        notification_list = [(getattr(record, channel_ref_field), bus_dict) for record in self]
+        self.env['bus.bus'].sendmany(notification_list)

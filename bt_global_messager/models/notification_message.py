@@ -103,7 +103,7 @@ class NotificationMessage(models.Model):
                 message = self.env['ir.translation']._get_source(None, 'model', user.lang, due_message.message)
                 title = self.env['ir.translation']._get_source(None, 'model', user.lang, due_message.name)
                 if self.env.ref('bt_global_messager.notification_type_odoo').id in due_message.notify_type_ids.ids:
-                    user.notify_warning(message, title=title, sticky=True)
+                    user.send_odoo_warn_notification(message, title=title, sticky=True)
 
                 if self.env.ref('bt_global_messager.notification_type_desktop').id in due_message.notify_type_ids.ids:
                     base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
@@ -115,8 +115,8 @@ class NotificationMessage(models.Model):
                     image_url = ""
                     if attachment:
                         image_url = "{}/web/content/{}".format(base_url, attachment[0].id)
-                    user.notify_push(message, title=title, icon=image_url, timeout=self.timeout)
-            due_message.write({'is_sent':True})
+                    user.send_push_notification(message, title=title, icon=image_url, timeout=self.timeout)
+            due_message.write({'is_sent': True})
 
     @api.depends('notification_offset_as_unit', 'notification_offset_unit')
     def _compute_minute_offset(self):

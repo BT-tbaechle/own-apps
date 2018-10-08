@@ -77,6 +77,9 @@ class Notification(models.Model):
             message = self.env['ir.translation']._get_source(None, 'model', user.lang, self.message)
             title = self.env['ir.translation']._get_source(None, 'model', user.lang, self.name)
             if self.env.ref('bt_global_messager.notification_type_odoo').id in self.notify_type_ids.ids:
+                user.send_odoo_info_notification(message, title=title, sticky=True)
+
+            if self.env.ref('bt_global_messager.notification_type_odoo_warn').id in self.notify_type_ids.ids:
                 user.send_odoo_warn_notification(message, title=title, sticky=True)
 
             if self.env.ref('bt_global_messager.notification_type_desktop').id in self.notify_type_ids.ids:

@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <data noupdate="1">
+    <data>
         <record model="notification.type" id="notification_type_odoo">
-            <field name="name">Odoo Pop-Up</field>
+            <field name="name">Odoo Pop-Up Info</field>
+        </record>
+        <record model="notification.type" id="notification_type_odoo_warn">
+            <field name="name">Odoo Pop-Up Warning</field>
         </record>
         <record model="notification.type" id="notification_type_desktop">
             <field name="name">Desktop Pop-Up</field>

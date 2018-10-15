@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (c) 2017 brain-tec AG (http://www.braintec-group.com)
+#    Copyright (c) 2018 brain-tec AG (http://www.braintec-group.com)
 #    All Right Reserved
 #
 #    See LICENSE file for full licensing details.
@@ -26,9 +26,9 @@ class Notification(models.Model):
         return [self.env.ref('bt_global_messager.notification_type_odoo').id,
                 self.env.ref('bt_global_messager.notification_type_desktop').id]
 
-    name = fields.Char(string="Title", required=True, translate=True,
+    name = fields.Char(string="Title", translate=True,
                        help="The title will be shown as the header of the notification (keep it short).")
-    message = fields.Text(string="Text", translate=True, help="The actual message.")
+    message = fields.Text(string="Text", translate=True, required=True, help="The actual message.")
     icon = fields.Binary(string="Icon", attachment=True, default=_get_default_image,
                          help="The icon that will be displayed by the notification \
                          (not available for all notification types).")

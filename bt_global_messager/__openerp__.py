@@ -7,7 +7,7 @@
 #    See LICENSE file for full licensing details.
 ##############################################################################
 {
-    'name': "BT Global Messager",
+    'name': "Global Messager",
     'summary': "Module that allows instant or time-based messaging with users.",
     'author': "braintec AG",
     'license': 'LGPL-3',

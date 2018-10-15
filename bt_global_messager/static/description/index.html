@@ -1,0 +1,146 @@
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan">Global Messager</h2>
+        <h3 class="oe_slogan">A module that allows instant or time-based messaging with users.</h3>
+    </div>
+</section>
+
+<section class="oe_container oe_separator" />
+
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <h4 class="oe_slogan">Overview</h4>
+
+        <p>
+            The Global Messager allows you to send instant or time-based messages through different
+            channels to all users in Odoo. This can help you in all different situations for example
+            can you inform users about an upcoming server maintenance so they can save and log out on time,
+            welcome a new employee, celebrate the current employee of the month,
+            release important internal information or the date of an upcoming event
+            or simply wish everyone a nice and relaxing weekend.
+        </p>
+
+    </div>
+
+    <div class="oe_row oe_spaced">
+        <h4 class="oe_slogan">Instructions</h4>
+
+        <p>
+            So how does it work? It's very easy, in the Discuss App und Global Messager you can create
+            notifications which represent either an event for which you might want to send several messages
+            or just a one off information.
+        </p>
+
+        <div class="oe_demo oe_picture oe_screenshot">
+            <img src="" style="max-width: 75%; position: relative; left: 13%;">
+        </div>
+
+        <p>
+            Here you have the ability to specify a title, message and icon for the notification as well as
+            choose different communication channels. So far we provide the options to display an Odoo
+            internal pop-up (displayed as information or warning) or a desktop notification.
+            The latter one is particularly useful as the user will be notified no matter what he/she
+            is currently doing on his computer as long as he is logged into Odoo in one of his browser tabs.
+            If he/she clicks on the pop-up the user will be taken directly to the Odoo browser tab so he can
+            take action.
+        </p>
+        <div class="oe_demo oe_picture oe_screenshot">
+            <img src="" style="max-width: 75%; position: relative; left: 13%;">
+        </div>
+        <div class="oe_demo oe_picture oe_screenshot">
+            <img src="" style="max-width: 75%; position: relative; left: 13%;">
+        </div>
+        <div class="oe_demo oe_picture oe_screenshot">
+            <img src="" style="max-width: 75%; position: relative; left: 13%;">
+        </div>
+    </div>
+
+    <div class="oe_row oe_spaced">
+        <h4 class="oe_slogan">Configuration</h4>
+        (Only possible for Administration / Configuration and Administration / Settings group)
+
+        <h5 class="oe_slogan">Time-Based</h5>
+        <p>
+            The first step is to configure the information regarding the message itself such as the title,
+            message text and icon as well as the desired notification channels. Now the way to think of this is
+            that these are the default values which can be adapted later on if needed as you have the ability to
+            send multiple messages for a notification. To further illustrate this lets puck up again our example of
+            an upcoming server maintenance.
+        </p>
+
+        <div class="oe_demo oe_picture oe_screenshot">
+            <img src="" style="max-width: 75%; position: relative; left: 13%;">
+        </div>
+
+        <p>
+            Now for the server maintenance we most likely have a set date and time on which it will take place.
+            This can be set in the Event Time field. Now you already have the basic setup completed.
+        </p>
+        <p>
+            After saving you can now setup the individual notification times when a message will be sent
+            out to the users. If you add a new notification time you will be prompted with a pop-up to
+            enter all the required information. Here you first need to set a type which can either be 'relative'
+            or 'absolute'. The 'absolute' type lets you specify an absolute point in time where the message
+            will be send out. With 'relative' you have the ability to specify a time offset relative to the event time
+            set on the notification. For this you need to specify an offset unit (minutes, hours, days or weeks)
+            as well as the desired offset where negative values will result in a message being sent before the
+            event time, while a positive value will send out a message after the event.
+        </p>
+        <div class="oe_demo oe_picture oe_screenshot">
+            <img src="" style="max-width: 75%; position: relative; left: 13%;">
+        </div>
+        <div class="oe_demo oe_picture oe_screenshot">
+            <img src="" style="max-width: 75%; position: relative; left: 13%;">
+        </div>
+        <p>
+            On each notification time you can choose one or more notification channels which shall be used for this
+            message. You also have the ability to customize the message that will be sent at this specific time
+            by checking the "Customize Message" box otherwise the defaults from the notification will be used.
+        </p>
+        <div class="oe_demo oe_picture oe_screenshot">
+            <img src="" style="max-width: 75%; position: relative; left: 13%;">
+        </div>
+        <p>
+            Now that everything is set up properly you can save and let the system handle the rest.
+            Each minute a scheduler is run which checks if there are due messages which need to be sent. If that's the
+            case, a message will be sent out to the users via the selected channels. The corresponding entry in the
+            notification times will be marked as sent.
+        </p>
+
+        <h5 class="oe_slogan">Instant</h5>
+        <p>
+            If there is no need to set a specific event time you can check the "Send manually" box which will
+            show the "Send" button at the very top. This allows you to send out the notification manually
+            whenever it seems appropriate. Each time the button is pressed, an entry in the notification times table
+            is created with the current timestamp.
+        </p>
+
+        <div class="oe_demo oe_picture oe_screenshot">
+            <img src="" style="max-width: 75%; position: relative; left: 13%;">
+        </div>
+
+    </div>
+
+    <div class="oe_row oe_spaced">
+        <h4 class="oe_slogan">Try before purchasing</h4>
+        <p>
+            A live demo of this module can be tested using the following
+            <a href="https://odooapps-9-demo.braintec-group.com/web?db=v9.0_bt_global_messager">link</a>
+        </p>
+
+        <ul>
+            <li>User: admin</li>
+            <li>Password: admin</li>
+        </ul>
+
+        <p>
+            It works with version 9 Community and Enterprise
+        </p>
+        <h4 class="oe_slogan">Contact Us</h4>
+        <p>
+            For questions related to this application, please use the following
+            <a href="mailto:support@braintec-group.com?subject=[Odoo Apps] Question about bt_global_messager">email</a>.</li>
+        </p>
+    </div>
+
+</section>
